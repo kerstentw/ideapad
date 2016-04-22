@@ -38,6 +38,9 @@ class Post(object):
         self.current_time = self.creation_time
         self.payMe = True
         self.name = self.passhash + '_' + str(self.creation_time)
+    
+    def __setattr__(self,target,location):
+        print "Attributes on {} cannot be set once instantiated.".format(self.name)    
 
     def __convertToDateTime(self,time_tuple):
         '''

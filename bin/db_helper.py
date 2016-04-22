@@ -10,10 +10,10 @@ try:
     import pickle
     import sqlite3
 
+except:
+    pass
 
-def pickle_it(to_pickle,
-              mode = "w",
-             ):
+def pickle_it(to_pickle, mode = "w"):
 
     '''
     mode types : 'w'
