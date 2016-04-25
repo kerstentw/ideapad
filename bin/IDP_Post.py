@@ -40,7 +40,7 @@ class Post(object):
         self.last_post = self.creation_time
         self.current_time = self.creation_time
         self.payMe = True
-        self.name = self.passhash + '_' + str(self.creation_time)
+        self.name = self.passhash
     
     def __setattr__(self,target,location):
         print "Attributes on {} cannot be set once instantiated.".format(self.name)    
