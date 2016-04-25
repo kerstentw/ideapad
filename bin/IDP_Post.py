@@ -5,6 +5,8 @@ import db_helper #Has functions for interacting with test database
 import os
 import sys
 import time, datetime
+from constants import *
+
 
 
 class Post(object):
@@ -18,6 +20,7 @@ class Post(object):
     '''
 
     def __init__(self, password = None):
+        
         '''
         This constructor will create a password hash that can be
         used to verify user.
@@ -107,6 +110,7 @@ class Post(object):
         self.hashdict.append(self.passhash)
         self.passhash = hashlib.sha256(new_pass)
 
+
     def stat(self):
         self.updatePost()
         my_stats = { 'name'          : self.name,
@@ -119,4 +123,7 @@ class Post(object):
 
         return my_stats
 
-    
+    def delete(self,master = PICKLE_MASTER): #from constants library
+        os.remove(os.path.join(PICKLE_MASTER,self.name))
+        return self.name," Removed"
+  

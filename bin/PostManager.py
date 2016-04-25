@@ -20,6 +20,7 @@ import os, sys
 import hashlib
 import pickle
 from IDP_Post import *
+
     # instantiates the term 'Post' with all its methods.
 
 
@@ -28,21 +29,11 @@ from IDP_Post import *
 
 PICKLE_MASTER = "pk_jar"
 
-if MASTER  not in os.listdir('.'):
+if PICKLE_MASTER  not in os.listdir('.'):
     os.mkdir(PICKLE_MASTER)
 
 else:
     pass
-
-class PostManager(self):
-    def __init__(self):
-        pass
-
-    def fetchPosts(self):
-        pass
-
-    def instantiatePosts(self):
-        pass
 
 
 class PickleManager(object):
@@ -51,6 +42,7 @@ class PickleManager(object):
         self.master = master
 
     def picklePosts(self,post_instance):
+        
         '''
         This function pickles an instance of a post and writes it to the master
         folder defined above.
@@ -73,3 +65,23 @@ class PickleManager(object):
 
     def deletePickle(self):
         pass
+
+
+
+class PostManager(self):
+
+    def __init__(self,post_instance = None):
+        pass
+
+    def fetchPosts(self):
+        pass
+
+    def instantiatePosts(self):
+        pass
+
+    def checkForPayment(self):
+        if post_instance:
+            return post_instance.checkForPayment
+
+
+
