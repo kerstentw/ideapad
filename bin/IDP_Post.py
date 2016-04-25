@@ -9,7 +9,7 @@ from constants import *
 
 
 
-class Post(object):
+class IdeaCollection(object):
     
     '''
     This class creates an ovject that keeps track of the posting
@@ -19,7 +19,7 @@ class Post(object):
 
     '''
 
-    def __init__(self, password = None):
+    def __init__(self, password = "Test"):
         
         '''
         This constructor will create a password hash that can be
@@ -27,24 +27,28 @@ class Post(object):
         '''
 
         if password: 
-            self.passhash = hashlib.sha256(str(password)).hexdigest()
+            passhash = hashlib.sha256(str(password)).hexdigest()
 
         else:
-            self.passhash = hashlib.sha256("key").hexdigest()        
+            passhash = hashlib.sha256("key").hexdigest()        
+
+        self.passhash = passhash
 
         datetime.MINYEAR = 2016
-        self.creation_time = tuple(x for x in time.localtime()[0:5])
+        build_time = tuple(x for x in time.localtime()[0:5])
         
-        self.hashlist = ['END'] # Treat as a reverse queue: front is oldest.  Tail is youngest
-        
-        self.last_post = self.creation_time
-        self.current_time = self.creation_time
-        self.payMe = True
-        self.name = self.passhash
-    
-    def __setattr__(self,target,location):
-        print "Attributes on {} cannot be set once instantiated.".format(self.name)    
+        self.creationtime = build_time
+        self.last_post = build_time
+        self.current_time = build_time
 
+        #Eventually use self.hashlist as a way to merge IdeaPads.
+        self.hashlist = ['END'] # Treat as a reverse queue: front is oldest.  Tail is youngest
+        self.payMe = True
+        self.name = str(passhash)
+    
+        self.post_texts = dict() # Eventually make this a custom UserDict
+								 # That limits size of value entries 
+   
     def __convertToDateTime(self,time_tuple):
         '''
         convert a time tuple into a datetime structure
@@ -54,6 +58,7 @@ class Post(object):
         datetime_obj = eval(time_str)
         print datetime_obj
         return datetime_obj
+
 
     def coerceCurrentAnchorChange(self,(yyyy,mm,dd,hh,ss),just_current = 1):
         
@@ -83,7 +88,7 @@ class Post(object):
 
     def checkElapsedTime(self):
         self.updatePost()
-        dt_last_post = self.__convertToDateTime(self.post_anchor)        
+        dt_last_post = self.__convertToDateTime(self.last_post)        
         dt_current = self.__convertToDateTime(self.current_time)
         elapsed = dt_current - dt_last_post        
 
@@ -93,7 +98,7 @@ class Post(object):
         self.last_post = tuple(x for x in time.localtime()[0:5])
 
     def checkForPayment(self):
-        elapse_check = checkElapsedTime()
+        elapse_check = self.checkElapsedTime()
         if elapse_check  == 0:
             self.payMe = True
             return self.payMe       
@@ -115,7 +120,7 @@ class Post(object):
         self.updatePost()
         my_stats = { 'name'          : self.name,
                      'password_hash' : self.passhash,
-                     'creation_date' : self.creation_time,
+                     'creation_date' : self.creationtime,
                      'last_post'     : self.last_post,
                      'last_checked'  : self.current_time,
                      'payable?'      : self.payMe
@@ -127,3 +132,12 @@ class Post(object):
         os.remove(os.path.join(PICKLE_MASTER,self.name))
         return self.name," Removed"
   
+    def addPost(self,post_info):
+		'''
+		Adds idea_post_string into the Post
+		'''
+        try:
+            post_texts[str(self.current_time)] = post_info
+        except:
+			return "error while posting"  
+          

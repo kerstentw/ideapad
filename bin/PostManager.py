@@ -47,9 +47,8 @@ going to get pushed.  See if a PSQL offsite is possible.
   
     '''
 	
-    from IDP_Post import * #This is for depickling process schema
         
-    def __init__(self, master = PICKLE_MASTER:
+    def __init__(self, master = PICKLE_MASTER):
         self.master = master
 
     def picklePosts(self,post_instance):
@@ -66,7 +65,7 @@ going to get pushed.  See if a PSQL offsite is possible.
                               "{post_name}.pk".format(
                               post_name = post_instance.name)),"wb")
                               
-        unpickled_post = pickle.dump(post_instance,temp_file)
+        unpickled_post = cPickle.dump(post_instance,temp_file)
         temp_file.close()
 
         return "post saved"
@@ -84,8 +83,12 @@ going to get pushed.  See if a PSQL offsite is possible.
         '''
         #When calling this, use a try-except loop
         
-        pickle_name = hashlib.sha256(str(pickle_human_name)) + ".p"
-        my_pickle = open(pickle_name,"rb")
+        pickle_human_name = str(pickle_human_name)
+        pickle_name = hashlib.sha256(pickle_human_name).hexdigest() + ".pk"
+        full = os.path.join(PICKLE_MASTER,pickle_name)
+        full = os.path.join(os.curdir,full)
+        
+        my_pickle = open(full,"rb")
         
         return cPickle.load(my_pickle) 
 
@@ -106,7 +109,7 @@ going to get pushed.  See if a PSQL offsite is possible.
         return human_readable_name, " deleted"
 
 
-class PostManager(self):
+class PostManager(object):
 
     '''
     This handles retrieving info from the Post objects.  It has no 
