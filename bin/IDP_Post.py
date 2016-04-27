@@ -4,6 +4,7 @@ import hashlib
 import db_helper #Has functions for interacting with test database
 import os
 import sys
+import PostDict
 import time, datetime
 from constants import *
 
@@ -46,8 +47,7 @@ class IdeaCollection(object):
         self.payMe = True
         self.name = str(passhash)
     
-        self.post_texts = dict() # Eventually make this a custom UserDict
-								 # That limits size of value entries 
+        self.post_texts = PostDict.postdict()  
    
     def __convertToDateTime(self,time_tuple):
         '''
@@ -133,11 +133,22 @@ class IdeaCollection(object):
         return self.name," Removed"
   
     def addPost(self,post_info):
-		'''
+        '''
 		Adds idea_post_string into the Post
-		'''
+        '''
         try:
             post_texts[str(self.current_time)] = post_info
         except:
 			return "error while posting"  
           
+    def fetchAllPosts(self):
+        """
+		Returns a tuple of posts that can be paginated by the front end
+		to show the user.
+        """
+		
+        return tuple(self.post_texts[post] for post in 
+                                                   self.post_texts.data)
+		
+		
+		

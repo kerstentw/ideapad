@@ -90,7 +90,9 @@ going to get pushed.  See if a PSQL offsite is possible.
         
         my_pickle = open(full,"rb")
         
-        return cPickle.load(my_pickle) 
+        post_instance = cPickle.load(my_pickle) 
+        
+        return post_instance
 
 
     def pushPK(self): #To Database
@@ -109,6 +111,19 @@ going to get pushed.  See if a PSQL offsite is possible.
         return human_readable_name, " deleted"
 
 
+
+
+
+
+
+
+
+#####
+##### FIGURE OUR DATAFLOW FOR THIS MOTHERFUCKER
+#####
+
+
+
 class PostManager(object):
 
     '''
@@ -122,21 +137,45 @@ handled by two things:
 	Keep in mind that the PostManager does not hold any state and has
 no built in methods for retrieving any saved state whether from a 
 session or a pickle.
+    
+    Each new reference or change must accompany a depickling of the 
+post instance.  This is to prevent 
     '''
 
     def __init__(self,post_instance = None):
-        pass
+        self.spm = PickleManager() #spm is Session Pickle Manager
 
-    def fetchPosts(self):
-        pass
 
-    def instantiatePosts(self):
-        pass
+    def create_post(self,username):
+        '''
+		This function relies on the frontend's ability to ensure that 
+all usernames being stored in the user_database are unique.  Any repeats
+will cause problems.
+        '''
+		
+        new_post = IdeaCollection(username)
+        self.spm.picklePosts(new_post)
+        return "Post Created."
 
-    def checkForPayment(self):
+
+    def fetchPost(self,username):
+        '''
+        Wrap in a try/except IOError
+        '''
+        post_instance = self.spm.dePickle(username)
+        return post_instance
+    
+    def makeSubmission(self,post_instance,data):
+        post_instance.addPost(data)
+        self.spm.picklePosts(post_instance)
+        return "Submission complete"
+
+    def checkForPayment(self,post_instance):
         if post_instance:
-            return post_instance.checkForPayment
+            return post_instance.checkForPayment()
 
-
-#def class_cycle
-
+    def displayPosts(self,post_instance):
+		
+        post_list = post_instance.fetchAllPosts()
+        return post_list
+        
